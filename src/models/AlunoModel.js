@@ -1,7 +1,7 @@
 import prisma from '../utils/prismaClient.js';
 
 export default class AlunoModel {
-    constructor({ id = null, nome, escola = null, turma = null, foto = null } = {}) {
+    constructor({ id = null, nome, escola = true, turma = null, foto = null } = {}) {
         this.id = id;
         this.nome = nome;
         this.escola = escola;
@@ -15,7 +15,7 @@ export default class AlunoModel {
                 nome: this.nome,
                 escola: this.escola,
                 turma: this.turma,
-                foto: this.foto
+                this: this.foto,
             },
         });
     }
@@ -23,7 +23,7 @@ export default class AlunoModel {
     async atualizar() {
         return prisma.aluno.update({
             where: { id: this.id },
-            data: { nome: this.nome, escola: this.escola, turma: this.turma, foto: this.foto },
+            data: { nome: this.nome, escola: this.escola, preco: this.turma, foto: this.foto },
         });
     }
 
@@ -37,9 +37,8 @@ export default class AlunoModel {
         if (filtros.nome) where.nome = { contains: filtros.nome, mode: 'insensitive' };
         if (filtros.escola) where.escola = { contains: filtros.escola, mode: 'insensitive' };
         if (filtros.turma) where.turma = { contains: filtros.turma, mode: 'insensitive' };
-        if (filtros.foto) where.foto = { contains: filtros.foto, mode: 'insensitive' };
 
-        return prisma.aluno.findMany({ where });
+        return prisma.aluno.findMany({ where, orderBy: { id: 'asc' } });
     }
 
     static async buscarPorId(id) {

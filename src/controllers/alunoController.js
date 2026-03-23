@@ -10,13 +10,13 @@ export const criar = async (req, res) => {
 
         if (!nome) return res.status(400).json({ error: 'O campo "nome" é obrigatório!' });
 
-        const aluno = new AlunoModel({ nome, escola, turma, foto });
+        const aluno = new AlunoModelModel({ nome, escola, turma, foto });
         const data = await aluno.criar();
 
-        res.status(201).json({ message: 'Registro criado com sucesso!', data });
+        res.status(201).json({ message: 'Registro de aluno criado com sucesso!', data });
     } catch (error) {
-        console.error('Erro ao criar:', error);
-        res.status(500).json({ error: 'Erro interno ao salvar o registro.' });
+        console.error('Erro ao criar aluno:', error);
+        res.status(500).json({ error: 'Erro interno ao salvar o registro de aluno.' });
     }
 };
 
@@ -25,13 +25,13 @@ export const buscarTodos = async (req, res) => {
         const registros = await AlunoModel.buscarTodos(req.query);
 
         if (!registros || registros.length === 0) {
-            return res.status(200).json({ message: 'Nenhum registro de aluno encontrado.' });
+            return res.status(200).json({ message: 'Nenhum registro encontrado.' });
         }
 
         res.json(registros);
     } catch (error) {
-        console.error('Erro ao buscar aluno:', error);
-        res.status(500).json({ error: 'Erro ao buscar registros de aluno.' });
+        console.error('Erro ao buscar:', error);
+        res.status(500).json({ error: 'Erro ao buscar registros.' });
     }
 };
 
@@ -51,8 +51,8 @@ export const buscarPorId = async (req, res) => {
 
         res.json({ data: aluno });
     } catch (error) {
-        console.error('Erro ao buscar aluno:', error);
-        res.status(500).json({ error: 'Erro ao buscar registro de aluno.' });
+        console.error('Erro ao buscar:', error);
+        res.status(500).json({ error: 'Erro ao buscar registro.' });
     }
 };
 
@@ -99,7 +99,11 @@ export const deletar = async (req, res) => {
         }
 
         await aluno.deletar();
-        res.json({ message: `O registro "${aluno.nome}" foi deletado com sucesso!`, deletado: aluno });
+
+        res.json({
+            message: `O registro "${aluno.nome}" foi deletado com sucesso!`,
+            deletado: aluno,
+        });
     } catch (error) {
         console.error('Erro ao deletar:', error);
         res.status(500).json({ error: 'Erro ao deletar registro.' });
