@@ -1,24 +1,25 @@
 import AlunoModel from '../models/AlunoModel.js';
-import { gerarPdfAluno, gerarPdfTodos } from '../utils/pdfHelper.js';
+import { gerarPdfTodos, gerarPdfAluno } from '../utils/pdfHelper.js';
 
 export const relatorioTodos = async (req, res) => {
     try {
-        const registros = await AlunoModel.buscarTodos(req.query);
+        const alunos = await AlunoModel.buscarTodos();
 
-        if (!registros || registros.length === 0) {
-            return res.status(200).json({ message: 'Nenhum relatório encontrado.' });
+        if (!alunos || alunos.length === 0) {
+            return res.status(404).json({ error: 'Nenhum aluno encontrado!' });
         }
 
-        const pdf = await gerarPdfTodos(registros);
+        const pdf = await gerarPdfTodos(alunos);
+
         return res
             .set({
                 'Content-Type': 'application/pdf',
-                'Content-Disposition': 'inline; filename="alunos.pdf"',
+                'Content-Disposition': `inline; filename="alunos_relatorio.pdf"`,
             })
             .send(pdf);
     } catch (error) {
-        console.error('Erro ao buscar:', error);
-        res.status(500).json({ error: 'Erro ao gerar relatórios.' });
+        console.error('Erro ao gerar PDF:', error);
+        return res.status(500).json({ error: 'Erro ao gerar relatório.' });
     }
 };
 
@@ -36,9 +37,16 @@ export const relatorioPorId = async (req, res) => {
             return res.status(404).json({ error: 'Registro não encontrado.' });
         }
 
-        res.json({ data: aluno });
+        const pdf = await gerarPdfAluno(aluno);
+        return res
+            .set({
+                'Content-Type': 'application/pdf',
+                'Content-Disposition': `inline; filename="aluno_${id}.pdf"`,
+            })
+
+            .send(pdf);
     } catch (error) {
-        console.error('Erro ao buscar:', error);
-        res.status(500).json({ error: 'Erro ao buscar registro.' });
+        console.error('Erro ao gerar PDF:', error);
+        return res.status(500).json({ error: 'Erro ao gerar relatório.' });
     }
 };

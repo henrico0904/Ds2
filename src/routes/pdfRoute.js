@@ -1,9 +1,9 @@
 import express from 'express';
-import * as controller from '../controllers/pdfController.js';
+import { relatorioPorId, relatorioTodos } from '../controllers/pdfController.js';
 
 const router = express.Router();
 
-router.get('/pdf', controller.relatorioTodos);
-router.get('/pdf/:id', controller.relatorioPorId);
+router.get('/relatorio/pdf', relatorioTodos);
+router.get('/relatorio/:id', relatorioPorId);
 
 export default router;
