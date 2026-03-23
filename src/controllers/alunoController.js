@@ -10,7 +10,7 @@ export const criar = async (req, res) => {
 
         if (!nome) return res.status(400).json({ error: 'O campo "nome" é obrigatório!' });
 
-        const aluno = new AlunoModelModel({ nome, escola, turma, foto });
+        const aluno = new AlunoModel({ nome, escola, turma, foto });
         const data = await aluno.criar();
 
         res.status(201).json({ message: 'Registro de aluno criado com sucesso!', data });
